@@ -87,6 +87,9 @@ weather-data-pipeline/
 ├── requirements.txt
 
 └── .gitignore
+```
+
+
 
 Database Table
 
@@ -94,13 +97,13 @@ Table name: raw_weather
 
 Columns:
 
-id
-city
-temperature_c
-humidity
-weather_desc
-observation_time
-loaded_at
+  id
+  city
+  temperature_c
+  humidity
+  weather_desc
+  observation_time
+  loaded_at
 
 Example Analytics Query
 
