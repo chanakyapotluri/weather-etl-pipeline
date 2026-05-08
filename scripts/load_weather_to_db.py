@@ -1,9 +1,15 @@
 import os
+import logging
 import requests
 import pandas as pd
 from datetime import datetime
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 load_dotenv()
 
@@ -19,29 +25,39 @@ engine = create_engine(
 
 CITY = "Boston"
 
-url = f"https://wttr.in/{CITY}?format=j1"
+try:
+    logging.info("Starting weather data extraction")
 
-response = requests.get(url)
-data = response.json()
+    url = f"https://wttr.in/{CITY}?format=j1"
+    response = requests.get(url, timeout=10)
+    response.raise_for_status()
 
-current = data["current_condition"][0]
+    data = response.json()
+    current = data["current_condition"][0]
 
-weather_data = {
-    "city": CITY,
-    "temperature_c": float(current["temp_C"]),
-    "humidity": int(current["humidity"]),
-    "weather_desc": current["weatherDesc"][0]["value"],
-    "observation_time": datetime.now()
-}
+    weather_data = {
+        "city": CITY,
+        "temperature_c": float(current["temp_C"]),
+        "humidity": int(current["humidity"]),
+        "weather_desc": current["weatherDesc"][0]["value"],
+        "observation_time": datetime.now()
+    }
 
-df = pd.DataFrame([weather_data])
+    df = pd.DataFrame([weather_data])
 
-df.to_sql(
-    "raw_weather",
-    engine,
-    if_exists="append",
-    index=False
-)
+    logging.info("Weather data extracted successfully")
+    logging.info("Loading data into PostgreSQL")
 
-print("Weather data inserted successfully!")
-print(df)
+    df.to_sql(
+        "raw_weather",
+        engine,
+        if_exists="append",
+        index=False
+    )
+
+    logging.info("Weather data inserted successfully")
+    print(df)
+
+except Exception as e:
+    logging.error("Pipeline failed")
+    logging.error(e)
