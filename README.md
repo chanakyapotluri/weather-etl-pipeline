@@ -93,7 +93,11 @@ weather-data-pipeline/
 
 Database Table
 
-Table name: raw_weather
+Table name: 
+```
+raw_weather
+
+```
 
 Columns:
 
@@ -105,8 +109,9 @@ Columns:
   observation_time
   loaded_at
 
-Example Analytics Query
+## Example Analytics Query
 
+```
 SELECT
     city,
     AVG(temperature_c) AS avg_temperature_c,
@@ -114,6 +119,8 @@ SELECT
     COUNT(*) AS total_records
 FROM raw_weather
 GROUP BY city;
+
+```
 
 What This Project Demonstrates
 
