@@ -128,21 +128,15 @@ cd weather-etl-pipeline
 pip install -r requirements.txt
 ```
 
-3. Configure environment variables
-```bash
-cp .env.example .env
-# Add your API key and PostgreSQL credentials
-```
-
-4. Run the pipeline
+3. Run the pipeline
 ```bash
 python scripts/fetch_weather.py
 python scripts/load_weather_to_db.py
 ```
 
-5. Run analytics
+4. Run analytics
 ```bash
-psql -d your_db_name -f sql/weather_analytics.sql
+psql -d weather-pipeline-db -f sql/weather_analytics.sql
 ```
 
 ---
