@@ -1,144 +1,153 @@
-\# Weather ETL Pipeline
+# Weather ETL Pipeline
 
+An end-to-end ETL pipeline that extracts live weather data from a public API, stores raw data locally, loads it into PostgreSQL, and runs SQL analytics on top of the collected data.
 
+---
 
-\## Project Overview
+## Pipeline Architecture
 
-This project is a beginner-friendly data engineering pipeline that extracts live weather data from a public weather API, stores the raw data locally, loads it into PostgreSQL, and runs SQL analytics on top of the collected data.
+```
+Weather API → Python Extraction → Raw CSV Storage → PostgreSQL → SQL Analytics
+```
 
+---
 
+## Tech Stack
 
-The goal of this project is to demonstrate an end-to-end ETL workflow using Python, PostgreSQL, and SQL.
+- **Python** — data extraction, transformation, and loading
+- **PostgreSQL** — relational database for structured storage
+- **SQLAlchemy** — database connection and ORM
+- **Pandas** — data transformation and structuring
+- **Requests** — API calls
+- **python-dotenv** — environment variable management
+- **SQL** — analytics queries
 
+---
 
+## Pipeline Flow
 
-\## Tech Stack
+1. **Extract** — Fetch live weather data from a public REST API
+2. **Transform** — Parse JSON response into structured tabular format using Pandas
+3. **Store Raw** — Save raw data as CSV for auditability and reprocessing
+4. **Load** — Insert structured data into PostgreSQL
+5. **Analyze** — Run SQL analytics queries on stored data
 
-\- Python
+---
 
-\- PostgreSQL
+## Project Structure
 
-\- SQLAlchemy
-
-\- Pandas
-
-\- Requests
-
-\- python-dotenv
-
-\- SQL
-
-\- Git/GitHub
-
-
-
-\## Pipeline Flow
-
-1\. Extract weather data from a public API
-
-2\. Convert JSON response into structured tabular data
-
-3\. Save raw weather data as CSV
-
-4\. Load weather data into PostgreSQL
-
-5\. Run SQL analytics on the stored data
-
-
-
-\## Project Structure
-
-```text
-
-weather-data-pipeline/
-
+```
+weather-etl-pipeline/
 │
-
 ├── data/
-
-│   ├── raw/
-
-│   └── processed/
-
+│   ├── raw/                   # Raw CSV files from API
+│   └── processed/             # Transformed data
 │
-
 ├── scripts/
-
-│   ├── fetch\_weather.py
-
-│   ├── load\_weather\_to\_db.py
-
-│   └── test\_db\_connection.py
-
+│   ├── fetch_weather.py       # API extraction logic
+│   ├── load_weather_to_db.py  # PostgreSQL loading logic
+│   └── test_db_connection.py  # Connection validation
 │
-
 ├── sql/
-
-│   └── weather\_analytics.sql
-
+│   └── weather_analytics.sql  # Analytics queries
 │
-
-├── notebooks/
-
+├── notebooks/                 # Exploratory analysis
 │
-
 ├── README.md
-
 ├── requirements.txt
-
 └── .gitignore
 ```
 
+---
 
+## Database Schema
 
-Database Table
+**Table:** `raw_weather`
 
-Table name: 
-```
-raw_weather
+| Column | Type | Description |
+|---|---|---|
+| id | SERIAL | Primary key |
+| city | VARCHAR | City name |
+| temperature_c | FLOAT | Temperature in Celsius |
+| humidity | FLOAT | Humidity percentage |
+| weather_desc | VARCHAR | Weather description |
+| observation_time | TIMESTAMP | Time of observation |
+| loaded_at | TIMESTAMP | Time data was loaded into DB |
 
-```
-
-Columns:
-
-  id
-  city
-  temperature_c
-  humidity
-  weather_desc
-  observation_time
-  loaded_at
+---
 
 ## Example Analytics Query
 
-```
+```sql
 SELECT
     city,
-    AVG(temperature_c) AS avg_temperature_c,
-    AVG(humidity) AS avg_humidity,
-    COUNT(*) AS total_records
+    AVG(temperature_c)  AS avg_temperature,
+    AVG(humidity)       AS avg_humidity,
+    COUNT(*)            AS total_records
 FROM raw_weather
-GROUP BY city;
-
+GROUP BY city
+ORDER BY avg_temperature DESC;
 ```
 
-What This Project Demonstrates
+---
 
-  API data extraction
-  JSON parsing
-  Python data processing
-  PostgreSQL database loading
-  Environment variable usage
-  SQL analytics
-  Git/GitHub project workflow
+## What This Project Demonstrates
 
-Future Improvements
+- End-to-end ETL pipeline design and implementation
+- REST API data extraction and JSON parsing
+- Data transformation using Pandas
+- PostgreSQL schema design and data loading
+- Environment variable management for secure credentials
+- SQL analytics on structured data
+- Clean project structure following data engineering best practices
 
-  Add logging
-  Add data validation
-  Create processed tables
-  Add dbt transformations
-  Add Airflow orchestration
-  Store raw files in AWS S3
-  Build dashboard using Power BI or Streamlit
+---
 
+## Roadmap
+
+- [ ] Add structured logging
+- [ ] Add data validation layer
+- [ ] Build processed/aggregated tables
+- [ ] Integrate dbt for transformation layer
+- [ ] Orchestrate with Apache Airflow
+- [ ] Store raw files in AWS S3
+- [ ] Build dashboard with Streamlit or Power BI
+
+---
+
+## Setup & Usage
+
+1. Clone the repository
+```bash
+git clone https://github.com/chanakyapotluri/weather-etl-pipeline.git
+cd weather-etl-pipeline
+```
+
+2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+3. Configure environment variables
+```bash
+cp .env.example .env
+# Add your API key and PostgreSQL credentials
+```
+
+4. Run the pipeline
+```bash
+python scripts/fetch_weather.py
+python scripts/load_weather_to_db.py
+```
+
+5. Run analytics
+```bash
+psql -d your_db_name -f sql/weather_analytics.sql
+```
+
+---
+
+## Connect
+
+**LinkedIn:** [Chanakya Potluri](https://www.linkedin.com/in/potluri-chanakya)  
+**Portfolio:** [chanakya-potluri-portfolio.vercel.app](https://chanakya-potluri-portfolio.vercel.app)
