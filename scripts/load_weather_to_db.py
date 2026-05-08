@@ -45,6 +45,24 @@ try:
 
     df = pd.DataFrame([weather_data])
 
+    required_columns = [
+        "city",
+        "temperature_c",
+        "humidity",
+        "weather_desc",
+        "observation_time"
+    ]
+
+    if df[required_columns].isnull().any().any():
+        raise ValueError("Validation failed: missing values found in weather data")
+
+    if not df["temperature_c"].between(-100, 100).all():
+        raise ValueError("Validation failed: temperature is outside expected range")
+
+    if not df["humidity"].between(0, 100).all():
+        raise ValueError("Validation failed: humidity is outside expected range")
+
+    logging.info("Data validation passed")
     logging.info("Weather data extracted successfully")
     logging.info("Loading data into PostgreSQL")
 
